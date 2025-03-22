@@ -1,8 +1,37 @@
 import requests
 import os
 
+import requests
+
+#curl command to get new api key
+# Define the URL and headers
+url = 'https://iam.cloud.ibm.com/identity/token'
+headers = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+}
+
+# Define the payload (data) for the POST request
+data = {
+    'grant_type': 'urn:ibm:params:oauth:grant-type:apikey',
+    'apikey': 'GTH2VlKdyck3k1lBELX6VRYb2Qo-_dA2ocSgOzWhRvAo'
+}
+
+# Make the POST request
+response = requests.post(url, headers=headers, data=data)
+
+# Check if the request was successful
+if response.status_code == 200:
+    # Parse the JSON response to get the access token
+    access_token = response.json().get('access_token')
+    print("Access Token:", access_token)
+else:
+    print("Failed to retrieve access token. Status code:", response.status_code)
+    print("Response:", response.text)
+    
+    
+    
 # Set environment variables
-os.environ["WATSONX_ACCESS_TOKEN"] = 'eyJraWQiOiIyMDI1MDMwMTA4NDQiLCJhbGciOiJSUzI1NiJ9.eyJpYW1faWQiOiJJQk1pZC02NjEwMDRNUlBMIiwiaWQiOiJJQk1pZC02NjEwMDRNUlBMIiwicmVhbG1pZCI6IklCTWlkIiwianRpIjoiYzg5NmQwOTktZjc5OC00ZjI5LWI0MGItMzhlYmFkZTM2MzBiIiwiaWRlbnRpZmllciI6IjY2MTAwNE1SUEwiLCJnaXZlbl9uYW1lIjoiSGVucnkiLCJmYW1pbHlfbmFtZSI6IkppYW5nIiwibmFtZSI6IkhlbnJ5IEppYW5nIiwiZW1haWwiOiJoamlhbmcyMDAwQGdtYWlsLmNvbSIsInN1YiI6ImhqaWFuZzIwMDBAZ21haWwuY29tIiwiYXV0aG4iOnsic3ViIjoiaGppYW5nMjAwMEBnbWFpbC5jb20iLCJpYW1faWQiOiJJQk1pZC02NjEwMDRNUlBMIiwibmFtZSI6IkhlbnJ5IEppYW5nIiwiZ2l2ZW5fbmFtZSI6IkhlbnJ5IiwiZmFtaWx5X25hbWUiOiJKaWFuZyIsImVtYWlsIjoiaGppYW5nMjAwMEBnbWFpbC5jb20ifSwiYWNjb3VudCI6eyJ2YWxpZCI6dHJ1ZSwiYnNzIjoiZmQ2NjViNTEyZTI2NGQ2MWJhNDM0MWEzMzU3M2NjNWYiLCJpbXNfdXNlcl9pZCI6IjEzNDMxMTk0IiwiZnJvemVuIjp0cnVlLCJpbXMiOiIyOTk2MzM2In0sImlhdCI6MTc0MjY2MTc1OCwiZXhwIjoxNzQyNjY1MzU4LCJpc3MiOiJodHRwczovL2lhbS5jbG91ZC5pYm0uY29tL2lkZW50aXR5IiwiZ3JhbnRfdHlwZSI6InVybjppYm06cGFyYW1zOm9hdXRoOmdyYW50LXR5cGU6YXBpa2V5Iiwic2NvcGUiOiJpYm0gb3BlbmlkIiwiY2xpZW50X2lkIjoiZGVmYXVsdCIsImFjciI6MSwiYW1yIjpbInB3ZCJdfQ.FlArdFeMmLEVxRTrBIVTs6oYE1vdOl7csGaY4NlsV9mb8s9eHOzEBxSYtGMgMaSla9rKnM2sdlcuTUPySc3-mGeyPjm6t-sZxnNbcT5nZK2nd4MIZKBQga866eut8jn-dZNEZ1_r_8iCnVMtMI3d83XyOZ4xs7I2OJQSKlkDzzBlawucP4VJN6AOH83SgCrY99MbbgYR5RgGDI3YxJY4wKmuWeAuL7KXXr-TmFPBWUFxFl_f5Fqt43CKk8lR1i-otLdwIBMqvPO-U7s7v65CMvNc2lRV7fQOfmtCI-aExWo84gH8w9e60uqBguQqXyli_BGlCPre-wYirj7d649NOQ'
+os.environ["WATSONX_ACCESS_TOKEN"] = access_token
 os.environ["SERPER_API_KEY"] = "82c11076c852aaa5029574c2e2e8f00e55a1e9aa"
 
 # Watsonx API configuration
