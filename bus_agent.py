@@ -1,6 +1,37 @@
 import requests
 import os
 
+import requests
+#this gets the cards from the Trello board
+# Trello API endpoint and credentials
+list_id = "5f1743793b184e31ee7d27fb"  # this is the id of the to do list.
+api_key = "d200138058c063cbb4ccd1c46bb572a0"  # Replace with your Trello API key
+api_token = "ATTA2e7844b7cbb2557cf79ef8cd019d9f64f0fc77840bc4410149219a6f447c56b4D33239C4"  # Replace with your Trello API token
+
+# Trello API URL to get cards in a list
+url = f"https://api.trello.com/1/lists/{list_id}/cards"
+
+# Query parameters
+params = {
+    "key": api_key,
+    "token": api_token,
+    "fields": "name,desc"  # Only fetch the name and description fields
+}
+
+# Make the API request
+response = requests.get(url, params=params)
+
+# Check the response
+if response.status_code == 200:
+    cards = response.json()  # Parse the JSON response
+    for card in cards:
+        print(f"Card Name: {card['name']}")
+        print(f"Card Description: {card['desc']}")
+        print("-" * 40)  # Separator for readability
+else:
+    print("Failed to fetch cards. Status code:", response.status_code)
+    print("Response:", response.text)
+    
 # Define the URL and headers for IBM IAM token request
 url = 'https://iam.cloud.ibm.com/identity/token'
 headers = {
@@ -25,6 +56,7 @@ else:
     print("Failed to retrieve access token. Status code:", response.status_code)
     print("Response:", response.text)
     exit(1)  # Exit if the token request fails
+
 
 # Set environment variables
 os.environ["WATSONX_ACCESS_TOKEN"] = access_token
@@ -174,7 +206,7 @@ researcher = CustomAgent(
     model_id=WATSONX_MODEL_ID,
     parameters=parameters,
     role="Senior AI Researcher",
-    goal="Find promising research in the field of quantum computing.",
+    goal=card['desc'],   #f"Find promising research in the field of quantum computing.{card['desc']}",
     backstory="You are a veteran quantum computing researcher with a background in modern physics.",
     tools=[serper_search],
     verbose=True
