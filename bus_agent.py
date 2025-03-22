@@ -1,10 +1,7 @@
 import requests
 import os
 
-import requests
-
-#curl command to get new api key
-# Define the URL and headers
+# Define the URL and headers for IBM IAM token request
 url = 'https://iam.cloud.ibm.com/identity/token'
 headers = {
     'Content-Type': 'application/x-www-form-urlencoded'
@@ -16,7 +13,7 @@ data = {
     'apikey': 'GTH2VlKdyck3k1lBELX6VRYb2Qo-_dA2ocSgOzWhRvAo'
 }
 
-# Make the POST request
+# Make the POST request to get the access token
 response = requests.post(url, headers=headers, data=data)
 
 # Check if the request was successful
@@ -27,9 +24,8 @@ if response.status_code == 200:
 else:
     print("Failed to retrieve access token. Status code:", response.status_code)
     print("Response:", response.text)
-    
-    
-    
+    exit(1)  # Exit if the token request fails
+
 # Set environment variables
 os.environ["WATSONX_ACCESS_TOKEN"] = access_token
 os.environ["SERPER_API_KEY"] = "82c11076c852aaa5029574c2e2e8f00e55a1e9aa"
@@ -43,7 +39,7 @@ WATSONX_MODEL_ID = "ibm/granite-3-8b-instruct"
 parameters = {
     "decoding_method": "greedy",
     "max_new_tokens": 500,
-    "min_new_tokens": 0,
+    "min_new_tokens": 50,
     "repetition_penalty": 1
 }
 
@@ -197,6 +193,19 @@ writer = CustomAgent(
     verbose=True
 )
 
+# Create the Leadership agent
+leader = CustomAgent(
+    access_token=access_token,
+    project_id=WATSONX_PROJECT_ID,
+    model_id=WATSONX_MODEL_ID,
+    parameters=parameters,
+    role="Senior Vice President and Director, IBM Research",
+    goal="Come up with a step by step plan to implement the research into a product at IBM. Create a vision and a roadmap for the company.",
+    backstory="You are a veteran quantum computing writer with a background in modern physics.",
+    tools=[],
+    verbose=True
+)
+
 # Create the tasks
 task1 = CustomTask(
     description="Search the internet and find 5 examples of promising AI research.",
@@ -212,6 +221,13 @@ task2 = CustomTask(
     agent=writer
 )
 
+task3 = CustomTask(
+    description="Write a detailed plan to implement the ai and quantum computing research into a product at IBM. Create a vision and a roadmap for the company.",
+    expected_output="A detailed plan that includes a vision and a roadmap for IBM.",
+    output_file="task3output.txt",
+    agent=leader
+)
+
 # Execute the tasks
 print("🚀 Starting task 1...")
 task1_result = task1.execute()
@@ -220,3 +236,7 @@ print("✅ Task 1 completed. Output saved to task1output.txt")
 print("🚀 Starting task 2...")
 task2_result = task2.execute()
 print("✅ Task 2 completed. Output saved to task2output.txt")
+
+print("🚀 Starting task 3...")
+task3_result = task3.execute()
+print("✅ Task 3 completed. Output saved to task3output.txt")
